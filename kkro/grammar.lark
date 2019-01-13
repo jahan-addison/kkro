@@ -1,7 +1,8 @@
 %import common.ESCAPED_STRING  -> STRING
 %import common.DIGIT           -> DIGIT
 %import common.LETTER          -> LETTER
-%ignore /\S/ +                 // Ignore whitespace
+%import common.WS              -> WHITESPACE
+%ignore WHITESPACE             // Ignore whitespace
 %ignore "/*" /.+/ "*/"         // Ignore comments
 
 
