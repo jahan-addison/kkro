@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "kkro"
 version = "0.1.0"
-description = ""
+description = "B language compiler in Python 3"
 authors = ["Jahan Addison <jahan@jahanaddison.com>"]
 
 [tool.poetry.dependencies]
