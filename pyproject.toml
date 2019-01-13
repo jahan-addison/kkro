@@ -6,9 +6,9 @@ authors = ["Jahan Addison <jahan@jahanaddison.com>"]
 
 [tool.poetry.dependencies]
 python = "3.7.0"
-lark = "^0.0.4"
 mypy = "^0.650.0"
 flake8 = "^3.6"
+lark-parser = "^0.6.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"

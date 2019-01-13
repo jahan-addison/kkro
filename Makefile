@@ -2,7 +2,7 @@
 project = kkro
 
 type:
-	poetry run python -m mypy **/*.py
+	poetry run python -m mypy --ignore-missing-imports **/*.py
 
 lint: type
 	poetry run python -m flake8 $(project)/

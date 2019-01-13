@@ -1,0 +1,102 @@
+%import common.ESCAPED_STRING  -> STRING
+%import common.DIGIT           -> DIGIT
+%import common.LETTER          -> LETTER
+%ignore /\S/ +                 // Ignore whitespace
+%ignore "/*" /.+/ "*/"         // Ignore comments
+
+
+program : ( definition ) *
+
+
+definition : name ( "[" ( constant ) ? "]" ) ? (ival ( "," ival )* )? terminate
+    | name "(" ( name ( "," name)* ) ? ")" statement
+
+
+ival : constant
+    | name
+
+
+statement : "auto" name (constant) ? ("," name (constant) ? ) * terminate statement
+    | "extrn" name ("," name) * terminate statement
+    | name ":" statement
+    | "case" constant ":" statement
+    | ( (statement) * )
+    | "if" "(" rvalue ")" statement ("else" statement) ?
+    | "while" "(" rvalue ")" statement
+    | "switch" rvalue statement
+    | "goto" rvalue terminate
+    | "return" ( "(" rvalue ")" ) ? terminate
+    | ( rvalue ) ? terminate
+
+rvalue : "(" rvalue ")"
+    | lvalue
+    | constant
+    | lvalue assign rvalue
+    | inc_dec lvalue
+    | lvalue inc_dec
+    | unary rvalue
+    | "&" lvalue
+    | rvalue binary rvalue
+    | rvalue "?" rvalue ":" rvalue
+    | rvalue "(" ( rvalue ("," rvalue) * ) ? ")"
+
+
+terminate : ";"
+
+assign : equal (binary) ?
+
+
+equal : "="
+
+
+inc_dec : inc
+    | dec
+
+
+dec : "--"
+
+
+inc : "++"
+
+
+unary : "-"
+    | "!"
+
+
+binary : "|"
+    | "|"
+    | "&"
+    | "=="
+    | "!="
+    | "<"
+    | "<="
+    | ">"
+    | ">="
+    | "<<"
+    | ">>"
+    | "-"
+    | "+"
+    | "%"
+    | "*"
+    | "/"
+
+
+lvalue : name
+    | "*" rvalue
+    | rvalue "[" rvalue "]"
+
+
+constant : ( DIGIT ) +
+    | "'" ( LETTER ) ~ 1 .. 2 "'"
+    | "\"" ( LETTER ) * "\""
+
+
+name : alpha (alphanumeric ~ 7)
+
+
+alphanumeric : DIGIT
+    | alpha
+
+
+alpha : LETTER
+    | "_"
