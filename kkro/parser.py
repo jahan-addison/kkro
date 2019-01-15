@@ -16,6 +16,6 @@ printn(n, b) {
 
 with open('kkro/grammar.lark') as file:
     grammar = file.read()
-    test = Lark(grammar, parser='lalr', debug=True)
-    # test.parse(sample)
+    test = Lark(grammar, start='program', debug=True)
+    test.parse(sample)
     test

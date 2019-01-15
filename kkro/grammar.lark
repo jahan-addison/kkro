@@ -1,7 +1,8 @@
 /////////
 // B Language Grammar
+// Earley EBNF-like grammar
 // Placed separately in **public domain**
-// * No Warranty *
+// (No Warranty: Section 7-8 of Apache License 2)
 ////////
 
 
@@ -10,14 +11,19 @@
 %import common.LETTER          -> LETTER
 %import common.WS              -> WHITESPACE
 %ignore WHITESPACE             // Ignore whitespace
-%ignore "/*" /.+/ "*/"         // Ignore comments
+%ignore "/*" /./ * "*/"        // Ignore comments
 
 
-start : ( definition ) *
+?program : ( definition ) *
 
 
-definition : name ( "[" ( constant ) ? "]" ) ? (ival ( "," ival ) * )? terminate
-    | name "(" ( name ( "," name)* ) ? ")" statement
+?definition : vector_definition
+    | function_definition
+
+
+vector_definition : name ( "[" ( constant ) ? "]" ) ? (ival ( ","? ival ) * )? terminate
+
+function_definition :  name "(" ( name ("," name)* ) ? ")" statement
 
 
 ival : constant
@@ -51,7 +57,7 @@ if_statement : "if" "(" rvalue ")" statement ("else" statement)?
 
 return_statement : "return" ( "(" rvalue ")" )? terminate
 
-rvalue_statement : ( rvalue )? terminate
+rvalue_statement : ( rvalue )* terminate
 
 block_statement : "{" (statement) * "}"
 
@@ -62,38 +68,50 @@ switch_statement : "switch" "(" rvalue ")" statement
 break_statement : "break" terminate
 
 rvalue : "(" rvalue ")"
-    | lvalue
     | constant
     | lvalue assign rvalue
     | inc_dec lvalue
     | lvalue inc_dec
     | unary rvalue
-    | "&" lvalue
+    | unary_address_of lvalue
     | rvalue binary rvalue
     | rvalue "?" rvalue ":" rvalue
-    | rvalue "(" ( rvalue ("," rvalue) * ) ? ")"
+    | rvalue "(" ( rvalue (","? rvalue) * ) ? ")"
+    | lvalue
 
+lvalue: name
+    | unary_indirection rvalue
+    | rvalue "[" rvalue "]"
 
 terminate : ";"
 
-assign : equal (binary) ?
+assign : equal (binary)?
 
 
 equal : "="
 
 
-inc_dec : inc
-    | dec
+inc_dec : unary_inc
+    | unary_dec
 
 
-dec : "--"
+unary : unary_minus
+    | unary_not
+    | unary_ones_complement
 
+unary_indirection : "*"
 
-inc : "++"
+unary_address_of : "&"
 
+unary_minus : "-"
 
-unary : "-"
-    | "!"
+unary_not : "!"
+
+unary_inc : "++"
+
+unary_dec : "--"
+
+unary_ones_complement: "~"
 
 
 binary : "|"
@@ -113,18 +131,16 @@ binary : "|"
     | "/"
 
 
-lvalue : name
-    | "*" rvalue
-    | rvalue "[" rvalue "]"
-
-
 constant : ( DIGIT ) +
-    | "'" ( LETTER ) ~ 1 .. 2 "'"
-    | "\"" ( LETTER ) * "\""
+    | "'" ( char ) ~ 1 .. 2 "'"
+    | "\"" ( char ) * "\""
 
 
-name : alpha (alphanumeric ~ 7)
+name : alpha (alphanumeric ~ 0 .. 7)
 
+
+char : LETTER
+    | DIGIT
 
 alphanumeric : DIGIT
     | alpha
