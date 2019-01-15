@@ -1,3 +1,10 @@
+/////////
+// B Language Grammar
+// Placed separately in **public domain**
+// * No Warranty *
+////////
+
+
 %import common.ESCAPED_STRING  -> STRING
 %import common.DIGIT           -> DIGIT
 %import common.LETTER          -> LETTER
@@ -6,10 +13,10 @@
 %ignore "/*" /.+/ "*/"         // Ignore comments
 
 
-program : ( definition ) *
+start : ( definition ) *
 
 
-definition : name ( "[" ( constant ) ? "]" ) ? (ival ( "," ival )* )? terminate
+definition : name ( "[" ( constant ) ? "]" ) ? (ival ( "," ival ) * )? terminate
     | name "(" ( name ( "," name)* ) ? ")" statement
 
 
@@ -17,17 +24,42 @@ ival : constant
     | name
 
 
-statement : "auto" name (constant) ? ("," name (constant) ? ) * terminate statement
-    | "extrn" name ("," name) * terminate statement
-    | name ":" statement
-    | "case" constant ":" statement
-    | ( (statement) * )
-    | "if" "(" rvalue ")" statement ("else" statement) ?
-    | "while" "(" rvalue ")" statement
-    | "switch" rvalue statement
-    | "goto" rvalue terminate
-    | "return" ( "(" rvalue ")" ) ? terminate
-    | ( rvalue ) ? terminate
+statement : auto_statement
+    | extrn_statement
+    | label_statement
+    | case_statement
+    | block_statement
+    | if_statement
+    | while_statement
+    | switch_statement
+    | break_statement
+    | goto_statement
+    | return_statement
+    | rvalue_statement
+
+auto_statement : "auto" name (constant)? (","? name (constant)? )* terminate statement?
+
+extrn_statement : "extrn" name (","? name)* terminate statement?
+
+case_statement : "case" constant ":" statement
+
+label_statement : name ":" statement
+
+goto_statement: "goto" rvalue terminate
+
+if_statement : "if" "(" rvalue ")" statement ("else" statement)?
+
+return_statement : "return" ( "(" rvalue ")" )? terminate
+
+rvalue_statement : ( rvalue )? terminate
+
+block_statement : "{" (statement) * "}"
+
+while_statement : "while" "(" rvalue ")" statement
+
+switch_statement : "switch" "(" rvalue ")" statement
+
+break_statement : "break" terminate
 
 rvalue : "(" rvalue ")"
     | lvalue
@@ -65,7 +97,6 @@ unary : "-"
 
 
 binary : "|"
-    | "|"
     | "&"
     | "=="
     | "!="
