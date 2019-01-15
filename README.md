@@ -17,4 +17,4 @@ I am still deciding the target platform. It will most likely be an older hardwar
 
 ## License
 
-Apache 2 License
+Apache 2 License, unless otherwise specified.
