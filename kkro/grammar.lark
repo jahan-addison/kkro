@@ -1,9 +1,9 @@
-/////////
-// B Language Grammar
-// Earley EBNF-like grammar
-// Placed separately in **public domain**
-// (No Warranty: Section 7-8 of Apache License 2 in LICENSE)
-////////
+/////////////////////////////////////////////////////////////
+//         B Language Grammar
+//       Earley EBNF-like grammar
+//      Placed in **public domain**
+// (No Warranty: Section 7-8 of Apache 2 License)
+/////////////////////////////////////////////////////////////
 
 
 %import common.ESCAPED_STRING  -> STRING
@@ -17,7 +17,7 @@
 ?program : ( definition ) *
 
 
-?definition : vector_definition
+definition : vector_definition
     | function_definition
 
 
@@ -30,7 +30,7 @@ ival : constant
     | name
 
 
-statement : auto_statement
+statement.1 : auto_statement
     | extrn_statement
     | label_statement
     | case_statement
@@ -57,7 +57,7 @@ if_statement : "if" "(" rvalue ")" statement ("else" statement)?
 
 return_statement : "return" ( "(" rvalue ")" )? terminate
 
-rvalue_statement : ( rvalue )* terminate
+rvalue_statement.1 : ( rvalue )* terminate
 
 block_statement : "{" (statement) * "}"
 
@@ -67,17 +67,22 @@ switch_statement : "switch" "(" rvalue ")" statement
 
 break_statement : "break" terminate
 
-rvalue : "(" rvalue ")"
-    | constant
-    | lvalue assign rvalue
-    | inc_dec lvalue
-    | lvalue inc_dec
-    | unary rvalue
-    | unary_address_of lvalue
-    | rvalue binary rvalue
-    | rvalue "?" rvalue ":" rvalue
-    | rvalue "(" ( rvalue (","? rvalue) * ) ? ")"
-    | lvalue
+rvalue.2 : "(" rvalue ")"                           -> evaluated_expression
+    | constant                                      -> constant_literal_expression
+    | lvalue asignment_operator rvalue              -> assignment_expression
+    | inc_dec lvalue                                -> pre_increment_expression
+    | lvalue inc_dec                                -> post_increment_expression
+    | unary rvalue                                  -> unary_expression
+    | unary_address_of lvalue                       -> address_of_expression
+    | rvalue binary rvalue                          -> relation_expression
+    | rvalue "?" rvalue ":" rvalue                  -> ternary_expression
+    | callable_expression
+    | lvalue_expression
+
+
+callable_expression.3 : rvalue "(" ( rvalue (","? rvalue) * ) ? ")"
+lvalue_expression : lvalue
+
 
 lvalue: name
     | unary_indirection rvalue
@@ -85,7 +90,7 @@ lvalue: name
 
 terminate : ";"
 
-assign : equal (binary)?
+asignment_operator : equal (binary)?
 
 
 equal : "="
@@ -114,33 +119,33 @@ unary_dec : "--"
 unary_ones_complement: "~"
 
 
-binary : "|"
-    | "&"
-    | "=="
-    | "!="
-    | "<"
-    | "<="
-    | ">"
-    | ">="
-    | "<<"
-    | ">>"
-    | "-"
-    | "+"
-    | "%"
-    | "*"
-    | "/"
+binary : "|" -> or_operator
+    | "&"    -> and_operator
+    | "=="   -> eq_operator
+    | "!="   -> neq_oeprator
+    | "<"    -> lt_operator
+    | "<="   -> lte_operator
+    | ">"    -> gt_operator
+    | ">="   -> gte_operator
+    | "^"    -> xor_operator
+    | "<<"   -> lshift_operator
+    | ">>"   -> rshift_oeprator
+    | "-"    -> sub_operator
+    | "+"    -> add_operator
+    | "%"    -> mod_operator
+    | "*"    -> mul_operator
+    | "/"    -> div_operator
 
 
-constant : ( DIGIT ) +
-    | "'" ( char ) ~ 1 .. 2 "'"
-    | "\"" ( char ) * "\""
+constant : ( DIGIT ) +            -> number_literal
+    | "'" ( char ) ~ 1 .. 4 "'"   -> constant_literal
+    | /"(\\\"|\\\\|[^"\n])*?"i?/  -> string_literal
 
 
-name : alpha (alphanumeric ~ 0 .. 7)
+name : (alpha (alphanumeric ~ 0 .. 7))
 
-
-char : LETTER
-    | DIGIT
+// @TODO: machine portable
+char : /[\x00-\x7F]/
 
 alphanumeric : DIGIT
     | alpha

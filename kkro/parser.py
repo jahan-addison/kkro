@@ -4,17 +4,20 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 sample = '''
-printn(n, b) {
-        extrn putchar;
-        auto a;
-
-        if (a = n / b)        /* assignment, not test for equality */
-                printn(a, b); /* recursive */
-        putchar(n % b + '0');
+main( ) {
+  extrn a, b, c;
+  putchar(a);
+  putchar(b);
+  putchar(c);
+  putchar('!*n');
 }
+
+a 'Hell';
+b 'o, W';
+c 'orld';
 '''
 
 with open('kkro/grammar.lark') as file:
     grammar = file.read()
     test = Lark(grammar, start='program', debug=True)
-    print(test.parse(sample))
+    print(test.parse(sample).pretty())
