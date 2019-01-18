@@ -1,17 +1,16 @@
-/////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////
 //         B Language Grammar
 //       Earley EBNF-like grammar
 //      Placed in **public domain**
 // (No Warranty: Section 7-8 of Apache 2 License)
-/////////////////////////////////////////////////////////////
-
+// ///////////////////////////////////////////////////////////
 
 %import common.ESCAPED_STRING  -> STRING
 %import common.DIGIT           -> DIGIT
 %import common.LETTER          -> LETTER
 %import common.WS              -> WHITESPACE
 %ignore WHITESPACE             // Ignore whitespace
-%ignore "/*" /./ * "*/"        // Ignore comments
+%ignore "/*" /.+/ "*/"        // Ignore comments
 
 
 ?program : ( definition ) *
@@ -23,74 +22,97 @@ definition : vector_definition
 
 vector_definition : name ( "[" ( constant ) ? "]" ) ? (ival ( ","? ival ) * )? terminate
 
-function_definition :  name "(" ( name ("," name)* ) ? ")" statement
-
+function_definition.3 :  ( name "(" parameters? ")" block_statement )
 
 ival : constant
     | name
 
 
-statement.1 : auto_statement
+statement : auto_statement
     | extrn_statement
     | label_statement
-    | case_statement
+    | rvalue_statement
     | block_statement
+    | case_statement
     | if_statement
     | while_statement
     | switch_statement
     | break_statement
     | goto_statement
     | return_statement
-    | rvalue_statement
 
-auto_statement : "auto" name (constant)? (","? name (constant)? )* terminate statement?
+auto_statement : "auto" lvalue ("," lvalue )* terminate statement?
 
-extrn_statement : "extrn" name (","? name)* terminate statement?
+extrn_statement : "extrn" name ("," name)* terminate statement?
 
 case_statement : "case" constant ":" statement
 
 label_statement : name ":" statement
 
-goto_statement: "goto" rvalue terminate
+goto_statement : "goto" rvalue terminate
 
 if_statement : "if" "(" rvalue ")" statement ("else" statement)?
 
 return_statement : "return" ( "(" rvalue ")" )? terminate
 
-rvalue_statement.1 : ( rvalue )* terminate
+rvalue_statement : rvalue * terminate
 
-block_statement : "{" (statement) * "}"
+block_statement : ( "{" (statement) +  "}" )
 
-while_statement : "while" "(" rvalue ")" statement
+while_statement : "while" "(" ( rvalue ) ")" statement
 
 switch_statement : "switch" "(" rvalue ")" statement
 
 break_statement : "break" terminate
 
-rvalue.2 : "(" rvalue ")"                           -> evaluated_expression
-    | constant                                      -> constant_literal_expression
-    | lvalue asignment_operator rvalue              -> assignment_expression
-    | inc_dec lvalue                                -> pre_increment_expression
-    | lvalue inc_dec                                -> post_increment_expression
-    | unary rvalue                                  -> unary_expression
-    | unary_address_of lvalue                       -> address_of_expression
-    | rvalue binary rvalue                          -> relation_expression
-    | rvalue "?" rvalue ":" rvalue                  -> ternary_expression
-    | callable_expression
+
+expression : rvalue
+
+rvalue : evaluated_expression
+    | assignment_expression
+    | pre_increment_expression
+    | post_increment_expression
+    | unary_expression
+    | unary_address_of
+    | relation_expression
+    | ternary_expression
+    | function_expression
+    | constant_expression
     | lvalue_expression
 
 
-callable_expression.3 : rvalue "(" ( rvalue (","? rvalue) * ) ? ")"
+?parameters: [ rvalue ( "," rvalue )* ]
+
+function_expression : lvalue "(" parameters  ")" terminate
+
+ternary_expression : rvalue "?" rvalue ":" rvalue
+
+relation_expression : rvalue binary rvalue
+
+address_of_expression : unary_address_of lvalue
+
+unary_expression : unary rvalue
+
+post_increment_expression : lvalue inc_dec
+
+pre_increment_expression : inc_dec lvalue
+
+assignment_expression : lvalue asignment_operator rvalue
+
+constant_expression : constant
+
+evaluated_expression : "(" rvalue ")"
+
 lvalue_expression : lvalue
 
 
-lvalue: name
-    | unary_indirection rvalue
-    | rvalue "[" rvalue "]"
+?lvalue.2: name                 -> identifier
+    | unary_indirection rvalue  -> indirect_identifier
+    | lvalue "[" rvalue "]"     -> vector_identifier
 
 terminate : ";"
 
-asignment_operator : equal (binary)?
+asignment_operator : equal [ binary ]
 
 
 equal : "="
@@ -142,14 +164,7 @@ constant : ( DIGIT ) +            -> number_literal
     | /"(\\\"|\\\\|[^"\n])*?"i?/  -> string_literal
 
 
-name : (alpha (alphanumeric ~ 0 .. 7))
+name : /[a-zA-Z_][a-zA-Z0-9]{0,7}/
 
 // @TODO: machine portable
 char : /[\x00-\x7F]/
-
-alphanumeric : DIGIT
-    | alpha
-
-
-alpha : LETTER
-    | "_"
