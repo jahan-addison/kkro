@@ -1,38 +1,35 @@
-// ///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 //         B Language Grammar
 //       Earley EBNF-like grammar
 //      Placed in **public domain**
 // (No Warranty: Section 7-8 of Apache 2 License)
-// ///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 
 %import common.ESCAPED_STRING  -> STRING
 %import common.DIGIT           -> DIGIT
 %import common.LETTER          -> LETTER
 %import common.WS              -> WHITESPACE
-%ignore WHITESPACE             // Ignore whitespace
-%ignore "/*" /.+/ "*/"        // Ignore comments
 
-
-?program : ( definition ) *
-
+program : ( definition ) *
 
 definition : vector_definition
     | function_definition
 
+vector_definition   :  NAME ( "[" ( constant ) ? "]" ) ? (ival ( ","? ival ) * )? TERMINATE
 
-vector_definition : name ( "[" ( constant ) ? "]" ) ? (ival ( ","? ival ) * )? terminate
+function_definition :  ( NAME "(" parameters ")" block_statement )
 
-function_definition.3 :  ( name "(" parameters? ")" block_statement )
+parameters          :  [ rvalue (( "," rvalue ) *) ]
 
 ival : constant
-    | name
+    | NAME
 
 
-statement : auto_statement
+statement : block_statement
+    | auto_statement
     | extrn_statement
     | label_statement
     | rvalue_statement
-    | block_statement
     | case_statement
     | if_statement
     | while_statement
@@ -41,37 +38,39 @@ statement : auto_statement
     | goto_statement
     | return_statement
 
-auto_statement : "auto" lvalue ("," lvalue )* terminate statement?
 
-extrn_statement : "extrn" name ("," name)* terminate statement?
+auto_statement     : "auto" lvalue ("," lvalue )* TERMINATE statement?
 
-case_statement : "case" constant ":" statement
+extrn_statement    : "extrn" NAME ("," NAME)* TERMINATE statement?
 
-label_statement : name ":" statement
+case_statement     : "case" constant ":" statement
 
-goto_statement : "goto" rvalue terminate
+label_statement    :  NAME ":" statement
 
-if_statement : "if" "(" rvalue ")" statement ("else" statement)?
+goto_statement     : "goto" rvalue TERMINATE
 
-return_statement : "return" ( "(" rvalue ")" )? terminate
+if_statement       : "if" "(" rvalue ")" statement
 
-rvalue_statement : rvalue * terminate
+return_statement   : "return" ( "(" rvalue ")" )? TERMINATE
 
-block_statement : ( "{" (statement) +  "}" )
+rvalue_statement   :  (rvalue *) TERMINATE
 
-while_statement : "while" "(" ( rvalue ) ")" statement
+optional_statement :  (TERMINATE | statement)
 
-switch_statement : "switch" "(" rvalue ")" statement
+block_statement    :  ( "{" (statement) *  "}" )
 
-break_statement : "break" terminate
+while_statement    :  "while" "(" ( rvalue ) ")" optional_statement
+
+switch_statement   :  "switch" "(" rvalue ")" statement
+
+break_statement    :  "break" TERMINATE
 
 
-expression : rvalue
 
 rvalue : evaluated_expression
     | assignment_expression
-    | pre_increment_expression
-    | post_increment_expression
+    | pre_inc_dec_expression
+    | post_inc_dec_expression
     | unary_expression
     | unary_address_of
     | relation_expression
@@ -81,90 +80,87 @@ rvalue : evaluated_expression
     | lvalue_expression
 
 
-?parameters: [ rvalue ( "," rvalue )* ]
+function_expression     : lvalue "(" parameters  ")"
 
-function_expression : lvalue "(" parameters  ")" terminate
+ternary_expression      : rvalue "?" rvalue ":" rvalue
 
-ternary_expression : rvalue "?" rvalue ":" rvalue
+relation_expression     : rvalue binary rvalue
 
-relation_expression : rvalue binary rvalue
+address_of_expression   : unary_address_of lvalue
 
-address_of_expression : unary_address_of lvalue
+unary_expression        : unary rvalue
 
-unary_expression : unary rvalue
+post_inc_dec_expression : lvalue inc_dec
 
-post_increment_expression : lvalue inc_dec
+pre_inc_dec_expression  : inc_dec lvalue
 
-pre_increment_expression : inc_dec lvalue
+assignment_expression   : lvalue asignment_operator rvalue
 
-assignment_expression : lvalue asignment_operator rvalue
+constant_expression     : constant
 
-constant_expression : constant
+evaluated_expression    :  /[^a-zA-Z_0-9]/ "(" rvalue ")"
 
-evaluated_expression : "(" rvalue ")"
-
-lvalue_expression : lvalue
+lvalue_expression       : lvalue
 
 
-?lvalue.2: name                 -> identifier
+
+?lvalue: NAME                   -> identifier
     | unary_indirection rvalue  -> indirect_identifier
     | lvalue "[" rvalue "]"     -> vector_identifier
 
-terminate : ";"
 
-asignment_operator : equal [ binary ]
+asignment_operator : EQUAL [ binary ]
 
-
-equal : "="
-
-
-inc_dec : unary_inc
+?inc_dec : unary_inc
     | unary_dec
 
 
-unary : unary_minus
+?unary : unary_minus
     | unary_not
     | unary_ones_complement
 
-unary_indirection : "*"
-
-unary_address_of : "&"
-
-unary_minus : "-"
-
-unary_not : "!"
-
-unary_inc : "++"
-
-unary_dec : "--"
-
-unary_ones_complement: "~"
+unary_indirection     : "*"
+unary_address_of      : "&"
+unary_minus           : "-"
+unary_not             : "!"
+unary_inc             : "++"
+unary_dec             : "--"
+unary_ones_complement : "~"
 
 
-binary : "|" -> or_operator
-    | "&"    -> and_operator
-    | "=="   -> eq_operator
-    | "!="   -> neq_oeprator
-    | "<"    -> lt_operator
-    | "<="   -> lte_operator
-    | ">"    -> gt_operator
-    | ">="   -> gte_operator
-    | "^"    -> xor_operator
-    | "<<"   -> lshift_operator
-    | ">>"   -> rshift_oeprator
-    | "-"    -> sub_operator
-    | "+"    -> add_operator
-    | "%"    -> mod_operator
-    | "*"    -> mul_operator
-    | "/"    -> div_operator
+?binary : "|" -> or_operator
+    | "&"     -> and_operator
+    | "=="    -> eq_operator
+    | "!="    -> neq_oeprator
+    | "<"     -> lt_operator
+    | "<="    -> lte_operator
+    | ">"     -> gt_operator
+    | ">="    -> gte_operator
+    | "^"     -> xor_operator
+    | "<<"    -> lshift_operator
+    | ">>"    -> rshift_operator
+    | "-"     -> sub_operator
+    | "+"     -> add_operator
+    | "%"     -> mod_operator
+    | "*"     -> mul_operator
+    | "/"     -> div_operator
 
 
-constant : ( DIGIT ) +            -> number_literal
-    | "'" ( char ) ~ 1 .. 4 "'"   -> constant_literal
+
+constant  : /[0-9]/ +             -> number_literal
+    | "'" ( CHAR ) ~ 1 .. 4 "'"   -> constant_literal
     | /"(\\\"|\\\\|[^"\n])*?"i?/  -> string_literal
 
 
-name : /[a-zA-Z_][a-zA-Z0-9]{0,7}/
+EQUAL     : "="
 
-// @TODO: machine portable
-char : /[\x00-\x7F]/
+TERMINATE : ";"
+
+NAME      : /(?!if|while|return)[a-zA-Z_][a-z._A-Z0-9]{0,7}/
+
+CHAR      : /[\x00-\x7F]/
+
+COMMENT   : "/*" /.*?/ "*/"
+
+%ignore WHITESPACE        // Ignore whitespace
+%ignore COMMENT           // Ignore comments
