@@ -5,11 +5,6 @@
 // (No Warranty: Section 7-8 of Apache 2 License)
 /////////////////////////////////////////////////////////////
 
-%import common.ESCAPED_STRING  -> STRING
-%import common.DIGIT           -> DIGIT
-%import common.LETTER          -> LETTER
-%import common.WS              -> WHITESPACE
-
 program : ( definition ) *
 
 definition : vector_definition
@@ -39,9 +34,9 @@ statement : block_statement
     | return_statement
 
 
-auto_statement     : "auto" lvalue ("," lvalue )* TERMINATE statement?
+auto_statement     : "auto" lvalue ("," lvalue )* TERMINATE [ statement ]
 
-extrn_statement    : "extrn" NAME ("," NAME)* TERMINATE statement?
+extrn_statement    : "extrn" NAME ("," NAME)* TERMINATE [ statement ]
 
 case_statement     : "case" constant ":" statement
 
@@ -51,7 +46,7 @@ goto_statement     : "goto" rvalue TERMINATE
 
 if_statement       : "if" "(" rvalue ")" statement
 
-return_statement   : "return" ( "(" rvalue ")" )? TERMINATE
+return_statement   : "return" [ ( "(" rvalue ")" ) ] TERMINATE
 
 rvalue_statement   :  (rvalue *) TERMINATE
 
@@ -160,7 +155,9 @@ NAME      : /(?!if|while|return)[a-zA-Z_][a-z._A-Z0-9]{0,7}/
 
 CHAR      : /[\x00-\x7F]/
 
-COMMENT   : "/*" /.*?/ "*/"
+COMMENT   : "/*" /(\S|\s)*?/ "*/"
 
-%ignore WHITESPACE        // Ignore whitespace
-%ignore COMMENT           // Ignore comments
+%import common.WS   -> WHITESPACE
+
+%ignore WHITESPACE   // Ignore whitespace
+%ignore COMMENT      // Ignore comments
