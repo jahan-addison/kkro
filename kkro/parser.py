@@ -1,69 +1,64 @@
-from lark import Lark
+from lark import Lark, Tree, Transformer
+from typing import Optional
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-sample = '''
-/* The following function is a general formatting, printing, and
-   conversion subroutine.  The first argument is a format string.
-   Character sequences of the form '%x' are interpreted and cause
-   conversion of type 'x' of the next argument, other character
-   sequences are printed verbatim.   Thus
 
-    printf("delta is %d*n", delta);
+class ParserError(Exception):
+    """Parser Exception """
+    pass
 
-    will convert the variable delta to decimal (%d) and print the
-    string with the converted form of delta in place of %d.   The
-    conversions %d-decimal, %o-octal, *s-string and %c-character
-    are allowed.
 
-    This program calls upon the function 'printn'. (see section
-    9.1) */
+class Parser:
+    """Parser and adapter with lark for a source B program.
 
-printf(fmt, x1,x2,x3,x4,x5,x6,x7,x8,x9) {
-  extrn printn, char, putchar;
-  auto adx, x, c, i, j;
+    Build and transform a parse tree for syntax-directed translation.
 
-  i= 0;  /* fmt index */
-  adx = &x1;  /* argument pointer */
-loop :
-  while((c=char(fmt,i++) ) != '%') {
-    if(c == '*e')
-      return;
-    putchar(c);
-  }
-  x = *adx++;
-  switch c = char(fmt,i++) {
+    Attributes:
+        source_program(str): The source B program.
+        transformer(Transformer): Syntax-directed transformer.
+        Parser(Lark): Lark LALR(1) parser instance.
+        grammar(string): LALR(1) grammar that passes to lark.
+        tree(Tree): Parse tree.
 
-  case 'd': /* decimal */
-  case 'o': /* octal */
-    if(x < O) {
-      x = -x ;
-      putchar('-');
-    }
-    printn(x, c=='o' ? 8 : 10);
-    goto loop;
+    """
 
-  case 'c' : /* char */
-    putchar(x);
-    goto loop;
+    def __init__(self, source_program: str, transformer=None, debug=True, grammar='./grammar.lark') -> None:
+        """Initialize parser."""
+        self.source = source_program
+        self.transformer: Optional[Transformer] = transformer
+        self.grammar: Optional[str] = None
+        self.parser: Optional[Lark] = None
+        self._tree: Optional[Tree] = None
+        self._read_grammar(grammar)
 
-  case 's': /* string */
-    while((c=char(x, j++)) != '*e')
-      putchar(c);
-    goto loop;
-  }
-  putchar('%') ;
-  i--;
-  adx--;
-  goto loop;
-}
-'''
+    def get_parse_tree(self) -> Tree:
+        """Get the parse tree."""
+        if isinstance(self._tree, Tree):
+            return self._tree
+        else:
+            raise ParserError('Error building parse tree')
 
-with open('kkro/grammar.lark') as file:
-    grammar = file.read()
-    parser = Lark(grammar,
-                  start='program',
-                  parser='lalr',
-                  debug=True)
-    print(parser.parse(sample).pretty())
+    def print_parse_tree(self) -> None:
+        """Print the parse tree."""
+        if isinstance(self._tree, Tree):
+            print(self._tree.pretty())
+        else:
+            raise ParserError('Error printing parse tree')
+
+    def _set_parser(self, grammar: str) -> None:
+        """Set lark instance and parse tree."""
+        if isinstance(self.grammar, str):
+            self.parser = Lark(self.grammar,
+                               start='program',
+                               parser='lalr',
+                               transformer=self.transformer,
+                               debug=True)
+            self._tree = self.parser.parse(self.source)
+
+    def _read_grammar(self, location: str) -> None:
+        """Read grammar from disk and initialize parser."""
+        with open(location) as file:
+            self.grammar = file.read()
+            self._set_parser(self.grammar)
