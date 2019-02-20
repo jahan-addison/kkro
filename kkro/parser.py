@@ -24,7 +24,7 @@ class Parser:
 
     """
 
-    def __init__(self, source_program: str, transformer=None, debug=True, grammar='./grammar.lark') -> None:
+    def __init__(self, source_program: str, transformer=None, debug=True, grammar='kkro/grammar.lark') -> None:
         """Initialize parser."""
         self.source = source_program
         self.transformer: Optional[Transformer] = transformer
