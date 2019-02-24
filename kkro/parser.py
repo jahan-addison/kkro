@@ -7,10 +7,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class Parser:
-    """Parser and adapter with lark for a source B program.
+    """Parser and adapter with lark.
 
     Build and transform a parse tree for syntax-directed translation of
-    source a B program. Initializes with a provided LALR(1) lark grammar.
+    a source program. Initializes with the provided LALR(1) lark grammar.
 
     Args:
         source_program: The source B program.
