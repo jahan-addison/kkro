@@ -19,9 +19,9 @@ class Parser:
         grammar: Optional alternative LALR(1) grammar that passes to lark.
 
     Attributes:
-        source_program: The source B program.
+        source_program: The source program.
         transformer: Syntax-directed transformer.
-        Parser: Lark LALR(1) parser instance.
+        parser: Lark LALR(1) parser instance.
         grammar: LALR(1) grammar that passes to lark.
         tree: Parse tree.
 
@@ -56,10 +56,10 @@ class Parser:
     def _read_grammar(self, location: str) -> None:
         """Read source grammar.
 
-        Read a grammar from location on disk
+        Read a grammar from location on disk.
 
         Args:
-            grammar: The source LALR(1) grammar
+            grammar: The source LALR(1) grammar.
 
         """
         with open(location) as file:
