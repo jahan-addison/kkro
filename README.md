@@ -8,6 +8,8 @@ LALR(1) grammar and parser (via lark). [Language Details](https://www.bell-labs.
 
 The target platform will likely be z80.
 
+*Note*: Development has slowed due to Python's poor transition to flex/bison style and/or parser combinators. I find a partiuclar dislike in older lex/yacc parser design.
+
 ## Dependencies
 
 `kkro` uses `poetry` for dependency management:
