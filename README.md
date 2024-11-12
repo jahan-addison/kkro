@@ -1,12 +1,8 @@
 # kkro
 
-> B Language Compiler
-
-## Details
-
 LALR(1) grammar and parser (via lark). [Language Details](https://www.bell-labs.com/usr/dmr/www/btut.pdf), [and Syntax](https://www.bell-labs.com/usr/dmr/www/kbman.html).
 
-The target platform will likely be z80.
+<!-- The target platform will likely be z80. -->
 
 ## Dependencies
 
