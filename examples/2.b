@@ -1,6 +1,6 @@
 /* The following function is a general formatting, printing, and
    conversion subroutine.  The first argument is a format string.
-   Character sequences of the form `%x' are interpreted and cause
+   Character sequences of the form '%x' are interpreted and cause
    conversion of type 'x' of the next argument, other character
    sequences are printed verbatim.   Thus
 
@@ -11,7 +11,7 @@
     conversions %d-decimal, %o-octal, *s-string and %c-character
     are allowed.
 
-    This program calls upon the function `printn'. (see section
+    This program calls upon the function 'printn'. (see section
     9.1) */
 
 printf(fmt, x1,x2,x3,x4,x5,x6,x7,x8,x9) {
@@ -21,21 +21,22 @@ printf(fmt, x1,x2,x3,x4,x5,x6,x7,x8,x9) {
 	i= 0;	/* fmt index */
 	adx = &x1;	/* argument pointer */
 loop :
-	while((c=char(fmt,i++) ) != `%') {
-		if(c == `*e')
+	while((c=char(fmt,i++) ) != '%') {
+		if(c == '*e')
 			return;
 		putchar(c);
 	}
 	x = *adx++;
 	switch c = char(fmt,i++) {
 
-	case `d': /* decimal */
-	case `o': /* octal */
+	case 'd': /* decimal */
+	case 'o': /* octal */
 		if(x < O) {
 			x = -x ;
 			putchar('-');
 		}
-		printn(x, c=='o'?8:1O);
+		/* does not work: printn(x, c=='o'?8:1O); */
+		printn(x, 10);
 		goto loop;
 
 	case 'c' : /* char */
@@ -43,7 +44,8 @@ loop :
 		goto loop;
 
 	case 's': /* string */
-		while(c=char(x, j++)) != '*e')
+		/* does not work: while(c=char(x, j++)) != '*e') */
+		while(c != '*e')
 			putchar(c);
 		goto loop;
 	}

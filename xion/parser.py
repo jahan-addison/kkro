@@ -47,9 +47,12 @@ class Parser:
         """
         return self._tree
 
-    def print_parse_tree(self) -> None:
+    def print_parse_tree(self, pretty=False) -> None:
         """Print the current parse tree."""
-        print(self._tree.pretty())
+        if pretty is True:
+            print(self._tree.pretty())
+        else:
+            print(self._tree)
 
     def _read_grammar(self, location: str) -> None:
         """Read source grammar.

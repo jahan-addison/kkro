@@ -47,7 +47,6 @@ goto_statement     : "goto" NAME TERMINATE
 if_statement       : "if" "(" rvalue ")" statement [ "else" statement ]
 
 return_statement   : "return" [ ( "(" rvalue ")" ) ] TERMINATE
-    | "return" TERMINATE
 
 rvalue_statement   :  expression +
 
