@@ -10,7 +10,8 @@ lint: type
 test: type
 	PYTHONPATH=./$(project) poetry run pytest $(project)/tests
 
-start: lint
-	poetry run python $(shell pwd)/$(project)/__main__.py
+run: lint
+	# run the first example
+	poetry run python $(shell pwd)/$(project)/__main__.py -f ./examples/1.b -p
 
 
