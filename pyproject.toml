@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "kkro"
+name = "xion"
 version = "1.0.0"
-description = "B language compiler in Python 3"
+description = "Compiler frontend for the B Language"
 authors = ["Jahan Addison <jahan@jahanaddison.com>"]
 
 [tool.poetry.dependencies]

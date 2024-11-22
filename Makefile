@@ -1,5 +1,5 @@
 
-project = kkro
+project = xion
 
 type:
 	poetry run python -m mypy --ignore-missing-imports **/*.py
