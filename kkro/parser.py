@@ -29,8 +29,6 @@ class Parser:
     def __init__(self, source_program: str, transformer=None, debug=True, grammar='kkro/b_grammar.lark') -> None:
         self.source = source_program
         self.transformer: Optional[Transformer] = transformer
-        self.grammar: Optional[str] = None
-        self.parser: Optional[Lark] = None
         self._read_grammar(grammar)
         self.parser = Lark(
             self.grammar,

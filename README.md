@@ -1,6 +1,8 @@
 # kkro
 
-LALR(1) grammar and parser (via lark). [Language Details](https://www.bell-labs.com/usr/dmr/www/btut.pdf), [and Syntax](https://www.bell-labs.com/usr/dmr/www/kbman.html).
+## Compiler frontend for the B Language
+
+LALR(1) grammar and parser (via Lark). [Language Details](https://www.bell-labs.com/usr/dmr/www/btut.pdf), [and Syntax](https://www.bell-labs.com/usr/dmr/www/kbman.html).
 
 <!-- The target platform will likely be z80. -->
 
@@ -13,4 +15,4 @@ LALR(1) grammar and parser (via lark). [Language Details](https://www.bell-labs.
 
 ## License
 
-Apache 2 License, unless otherwise specified.
+Apache 2 License.

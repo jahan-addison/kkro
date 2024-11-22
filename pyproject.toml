@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "kkro"
-version = "0.1.0"
+version = "1.0.0"
 description = "B language compiler in Python 3"
 authors = ["Jahan Addison <jahan@jahanaddison.com>"]
 
 [tool.poetry.dependencies]
-python = "3.7.0"
-mypy = "^0.650.0"
+python = "3.13.0"
+mypy = "^1.13.0"
 flake8 = "^3.6"
-lark-parser = "^0.6.5"
+lark = "^1.2.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
