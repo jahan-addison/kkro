@@ -35,8 +35,7 @@ loop :
 			x = -x ;
 			putchar('-');
 		}
-		/* does not work: printn(x, c=='o'?8:1O); */
-		printn(x, 10);
+		printn(x, c=='z' ? 8 : 1O);
 		goto loop;
 
 	case 'c' : /* char */
@@ -44,8 +43,7 @@ loop :
 		goto loop;
 
 	case 's': /* string */
-		/* does not work: while(c=char(x, j++)) != '*e') */
-		while(c != '*e')
+		while(c=char(x, j++) != '*e')
 			putchar(c);
 		goto loop;
 	}
