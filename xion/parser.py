@@ -26,7 +26,7 @@ class Parser:
         tree: Parse tree.
 
     """
-    def __init__(self, source_program: str, transformer=None, debug=True, grammar='xion/b_grammar.lark') -> None:
+    def __init__(self, source_program: str, transformer=None, debug=True, grammar='xion/grammar.lark') -> None:
         self.source = source_program
         self.transformer: Optional[Transformer] = transformer
         self._read_grammar(grammar)
