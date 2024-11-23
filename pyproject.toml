@@ -11,7 +11,7 @@ flake8 = "^3.6"
 lark = "^1.2.2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^3.0"
+pytest = "^8"
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -8,7 +8,7 @@ lint: type
 	poetry run python -m flake8 --ignore E501,F841 $(project)/
 
 test: type
-	PYTHONPATH=./$(project) poetry run pytest $(project)/tests
+	poetry run pytest -s
 
 run: lint
 	# run the first example

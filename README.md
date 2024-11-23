@@ -8,10 +8,14 @@ LALR(1) grammar and parser (via [Lark](https://github.com/lark-parser/lark)). [L
 
 ## Dependencies
 
-`xion` uses `poetry` for dependency management:
+`xion` uses `poetry` for dependency management. Run `poetry install` to install dependencies.
 
-* Run `poetry install` to resolve dependencies.
-* Then, use `make run` to run the parser on the first B program example.
+## Usage
+
+* `make run` to run the parser on the first B program example
+* `make test` to run the test suite and verify grammar correctness
+
+This project was created for [roxas](https://github.com/jahan-addison/roxas) as the frontend for a B compiler.
 
 ## License
 

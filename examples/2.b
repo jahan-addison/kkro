@@ -35,7 +35,7 @@ loop :
 			x = -x ;
 			putchar('-');
 		}
-		printn(x, c=='z' ? 8 : 11);
+		printn(x, c=='z' ? 8 : 10);
 		goto loop;
 
 	case 'c' : /* char */
