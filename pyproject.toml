@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "xion"
-version = "1.0.0"
+version = "1.0.1"
 description = "Compiler frontend for the B Language"
 authors = ["Jahan Addison <jahan@jahanaddison.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10"
 mypy = "^1.13.0"
-flake8 = "^3.6"
+flake8 = "^7.1"
 lark = "^1.2.2"
 
 [tool.poetry.dev-dependencies]

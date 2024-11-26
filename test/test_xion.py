@@ -9,7 +9,7 @@ from .fixture.program_2_parse_tree import program_example_2_parse_tree
 from .fixture.program_3_parse_tree import program_example_3_parse_tree
 
 def test_version() -> None:
-    assert __version__ == '1.0.0'
+    assert __version__ == '1.0.1'
 
 def test_program_1_parse_tree(program_example_1_parse_tree: str) -> None:
     with open(getcwd() + '/examples/1.b') as file:
