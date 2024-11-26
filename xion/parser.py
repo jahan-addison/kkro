@@ -1,5 +1,5 @@
 from lark import Lark, Tree, Transformer
-from typing import Optional
+from typing import Optional, Union
 import logging
 
 # Initialize logging for lark.
@@ -27,7 +27,7 @@ class Parser:
 
     """
     def __init__(self, source_program: str, transformer=None, debug=True, grammar='xion/grammar.lark') -> None:
-        self.source = source_program
+        self.source: str = source_program
         self.transformer: Optional[Transformer] = transformer
         self._read_grammar(grammar)
         self.parser = Lark(
@@ -38,6 +38,10 @@ class Parser:
             debug=True)
         self._tree = self.parser.parse(self.source)
 
+    def __str__(self) -> str:
+        """Pretty print the parse tree. """
+        return self._tree.pretty()
+
     def get_parse_tree(self) -> Tree:
         """Get the current parse tree.
 
@@ -47,12 +51,10 @@ class Parser:
         """
         return self._tree
 
-    def print_parse_tree(self, pretty=False) -> None:
-        """Print the current parse tree."""
-        if pretty is True:
-            print(self._tree.pretty())
-        else:
-            print(self._tree)
+
+    def print_parse_tree(self) -> None:
+        """Print the parse tree. """
+        print(self.get_parse_tree())
 
     def _read_grammar(self, location: str) -> None:
         """Read source grammar.
