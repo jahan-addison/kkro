@@ -13,4 +13,4 @@ if __name__ == '__main__':
 
     with open(args.filename) as file:
         parser = Parser(file.read())
-        parser.print_parse_tree(args.pretty)
+        parser.print_parse_tree(pretty=True)

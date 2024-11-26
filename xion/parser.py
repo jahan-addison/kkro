@@ -1,5 +1,5 @@
 from lark import Lark, Tree, Transformer
-from typing import Optional, Union
+from typing import Optional
 import logging
 
 # Initialize logging for lark.
@@ -39,7 +39,7 @@ class Parser:
         self._tree = self.parser.parse(self.source)
 
     def __str__(self) -> str:
-        """Pretty print the parse tree. """
+        """The parse tree as formatted string """
         return self._tree.pretty()
 
     def get_parse_tree(self) -> Tree:
@@ -51,10 +51,19 @@ class Parser:
         """
         return self._tree
 
+    def print_parse_tree(self, pretty=False, file=None) -> None:
+        """Print parse tree.
 
-    def print_parse_tree(self) -> None:
-        """Print the parse tree. """
-        print(self.get_parse_tree())
+        Print the parse tree to a text stream.
+
+        Args:
+            pretty: Print as formatted string
+            file: text stream
+        """
+        if pretty is True:
+            print(self._tree.pretty(), file=file)
+        else:
+            print(self.get_parse_tree(), file=file)
 
     def _read_grammar(self, location: str) -> None:
         """Read source grammar.
