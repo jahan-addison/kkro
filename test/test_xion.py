@@ -21,8 +21,9 @@ def test_program_2_parse_tree(program_example_2_parse_tree: str) -> None:
         parser = Parser(file.read())
         assert(str(parser.get_parse_tree()) == program_example_2_parse_tree)
 
-@pytest.mark.skip(reason="string escape bug")
 def test_program_3_parse_tree(program_example_3_parse_tree: str) -> None:
     with open(getcwd() + '/examples/3.b') as file:
         parser = Parser(file.read())
-        assert(str(parser.get_parse_tree()) == program_example_3_parse_tree)
+
+        assert(str(parser).replace('\t', ' ' * 4) == program_example_3_parse_tree)
+

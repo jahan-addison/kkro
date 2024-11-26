@@ -2,4 +2,82 @@ import pytest
 
 @pytest.fixture # type: ignore
 def program_example_3_parse_tree() -> str:
-  return """Tree(Token('RULE', 'program'), [Tree(Token('RULE', 'definition'), [Tree(Token('RULE', 'function_definition'), [Token('NAME', 'snide'), Tree(Token('RULE', 'parameters'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'lvalue_expression'), [Tree('identifier', [Token('NAME', 'errno')])])])]), Tree(Token('RULE', 'block_statement'), [Tree(Token('RULE', 'statement'), [Tree(Token('RULE', 'extrn_statement'), [Token('NAME', 'wr.unit'), Token('NAME', 'mess'), Token('TERMINATE', ';'), Tree(Token('RULE', 'statement'), [Tree(Token('RULE', 'auto_statement'), [Tree('identifier', [Token('NAME', 'u')]), Token('TERMINATE', ';'), Tree(Token('RULE', 'statement'), [Tree(Token('RULE', 'rvalue_statement'), [Tree(Token('RULE', 'expression'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'assignment_expression'), [Tree('identifier', [Token('NAME', 'u')]), Tree(Token('RULE', 'assignment_operator'), [Token('EQUAL', '='), None]), Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'lvalue_expression'), [Tree('identifier', [Token('NAME', 'wr.unit')])])])])]), Token('TERMINATE', ';')]), Tree(Token('RULE', 'expression'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'assignment_expression'), [Tree('identifier', [Token('NAME', 'wr.unit')]), Tree(Token('RULE', 'assignment_operator'), [Token('EQUAL', '='), None]), Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'constant_expression'), [Tree('number_literal', [Token('__ANON_9', '1')])])])])]), Token('TERMINATE', ';')]), Tree(Token('RULE', 'expression'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'function_expression'), [Tree('identifier', [Token('NAME', 'printf')]), Tree(Token('RULE', 'parameters'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'constant_expression'), [Tree('string_literal', [Token('__ANON_11', '"error number %d, %s*n\'*,errno,mess[errno]"')])])])])])]), Token('TERMINATE', ';')]), Tree(Token('RULE', 'expression'), [Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'assignment_expression'), [Tree('identifier', [Token('NAME', 'wr.unit')]), Tree(Token('RULE', 'assignment_operator'), [Token('EQUAL', '='), None]), Tree(Token('RULE', 'rvalue'), [Tree(Token('RULE', 'lvalue_expression'), [Tree('identifier', [Token('NAME', 'u')])])])])]), Token('TERMINATE', ';')])])])])])])])])])]), Tree(Token('RULE', 'definition'), [Tree(Token('RULE', 'vector_definition'), [Token('NAME', 'mess'), Tree('number_literal', [Token('__ANON_9', '5')]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"too bad"')])]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"tough luck"')])]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"sorry, Charlie"')])]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"that\'s the breaks"')])]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"what a shame"')])]), Tree(Token('RULE', 'ival'), [Tree('string_literal', [Token('__ANON_11', '"some days you can\'t win"')])]), Token('TERMINATE', ';')])])])"""
+  return """program
+  definition
+    function_definition
+      snide
+      parameters
+        rvalue
+          lvalue_expression
+            identifier    errno
+      block_statement
+        statement
+          extrn_statement
+            wr.unit
+            mess
+            ;
+            statement
+              auto_statement
+                identifier    u
+                ;
+                statement
+                  rvalue_statement
+                    expression
+                      rvalue
+                        assignment_expression
+                          identifier    u
+                          assignment_operator
+                            =
+                            None
+                          rvalue
+                            lvalue_expression
+                              identifier    wr.unit
+                      ;
+                    expression
+                      rvalue
+                        assignment_expression
+                          identifier    wr.unit
+                          assignment_operator
+                            =
+                            None
+                          rvalue
+                            constant_expression
+                              number_literal    1
+                      ;
+                    expression
+                      rvalue
+                        function_expression
+                          identifier    printf
+                          parameters
+                            rvalue
+                              constant_expression
+                                string_literal    "error number %d, %s*n'*,errno,mess[errno]"
+                      ;
+                    expression
+                      rvalue
+                        assignment_expression
+                          identifier    wr.unit
+                          assignment_operator
+                            =
+                            None
+                          rvalue
+                            lvalue_expression
+                              identifier    u
+                      ;
+  definition
+    vector_definition
+      mess
+      number_literal    5
+      ival
+        string_literal    "too bad"
+      ival
+        string_literal    "tough luck"
+      ival
+        string_literal    "sorry, Charlie"
+      ival
+        string_literal    "that's the breaks"
+      ival
+        string_literal    "what a shame"
+      ival
+        string_literal    "some days you can't win"
+      ;\n"""
