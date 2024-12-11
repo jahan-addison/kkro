@@ -76,3 +76,31 @@ class Parser:
         """
         with open(location) as file:
             self.grammar = file.read()
+
+
+def parse_source_program(source_program: str, debug=True) -> Tree:
+    """ Get parse tree of B program as serializable tree (Lark.Tree)
+
+    Args:
+        source_program: The source B program as a string
+        debug: debug flag
+
+    Returns:
+        Serializable parse tree
+
+    """
+    return Parser(source_program, debug=debug).get_parse_tree()
+
+
+def parse_source_program_as_string(source_program: str, debug=True) -> str:
+    """ Get parse tree of B program as serializable tree (Lark.Tree)
+
+    Args:
+        source_program: The source B program as a string
+        debug: debug flag
+
+    Returns:
+        Parse tree as string
+
+    """
+    return parse_source_program(source_program, debug).pretty()
