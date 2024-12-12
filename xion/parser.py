@@ -1,5 +1,6 @@
 from lark import Lark, Tree, Transformer
 from typing import Optional
+import os
 import logging
 
 # Initialize logging for lark.
@@ -26,7 +27,7 @@ class Parser:
         tree: Parse tree.
 
     """
-    def __init__(self, source_program: str, transformer=None, debug=True, grammar='xion/grammar.lark') -> None:
+    def __init__(self, source_program: str, transformer=None, debug=True, grammar=f'{os.path.dirname(__file__)}/grammar.lark') -> None:
         self.source: str = source_program
         self.transformer: Optional[Transformer] = transformer
         self._read_grammar(grammar)
