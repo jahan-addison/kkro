@@ -93,7 +93,7 @@ def parse_source_program(source_program: str, debug=True) -> Tree:
     return Parser(source_program, debug=debug).get_parse_tree()
 
 
-def parse_source_program_as_string(source_program: str, debug=True) -> str:
+def parse_source_program_as_string(source_program: str, pretty: bool = True, debug=True) -> str:
     """ Get parse tree of B program as serializable tree (Lark.Tree)
 
     Args:
@@ -104,4 +104,8 @@ def parse_source_program_as_string(source_program: str, debug=True) -> str:
         Parse tree as string
 
     """
-    return parse_source_program(source_program, debug).pretty()
+    if pretty:
+        return parse_source_program(source_program, debug).pretty()
+    else:
+        return str(parse_source_program(source_program, debug))
+
