@@ -1,6 +1,6 @@
 
 if __name__ == '__main__':
-    from xion.parser import Parser
+    from xion.parser import get_source_program_ast_as_string
     from argparse import ArgumentParser
 
     args_parser = ArgumentParser()
@@ -12,5 +12,4 @@ if __name__ == '__main__':
     args = args_parser.parse_args()
 
     with open(args.filename) as file:
-        parser = Parser(file.read())
-        parser.print_parse_tree(pretty=True)
+        print(get_source_program_ast_as_string(file.read(), pretty=args.pretty))

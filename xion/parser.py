@@ -1,5 +1,5 @@
-from lark import Lark, Tree, Transformer
-from typing import Optional
+from lark import Lark, Tree
+from xion.transformer import AST_Transformer
 import os
 import logging
 
@@ -27,15 +27,13 @@ class Parser:
         tree: Parse tree.
 
     """
-    def __init__(self, source_program: str, transformer=None, debug=True, grammar=f'{os.path.dirname(__file__)}/grammar.lark') -> None:
+    def __init__(self, source_program: str, debug=True, grammar=f'{os.path.dirname(__file__)}/grammar.lark') -> None:
         self.source: str = source_program
-        self.transformer: Optional[Transformer] = transformer
         self._read_grammar(grammar)
         self.parser = Lark(
             self.grammar,
             start='program',
             parser='lalr',
-            transformer=self.transformer,
             debug=True)
         self._tree = self.parser.parse(self.source)
 
@@ -109,3 +107,37 @@ def parse_source_program_as_string(source_program: str, pretty: bool = True, deb
     else:
         return str(parse_source_program(source_program, debug))
 
+
+def get_source_program_as_ast(source_program: str, debug=True) -> Tree:
+    """ Get AST of B program (Lark.Tree)
+
+    Args:
+        source_program: The source B program as a string
+        debug: debug flag
+
+    Returns:
+        Tree[AST]
+
+    """
+    tree = Parser(source_program, debug=debug).get_parse_tree()
+    ast = AST_Transformer().transform(tree)
+    return ast
+
+
+def get_source_program_ast_as_string(source_program: str, pretty: bool = True, debug=True) -> str:
+    """ Get AST of B program as string
+
+    Args:
+        source_program: The source B program as a string
+        debug: debug flag
+
+    Returns:
+        AST as string
+
+    """
+    tree = Parser(source_program, debug=debug).get_parse_tree()
+    ast = AST_Transformer().transform(tree)
+    if pretty:
+        return ast.pretty()
+    else:
+        return str(ast)
